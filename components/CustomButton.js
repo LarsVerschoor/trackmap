@@ -1,10 +1,13 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 function CustomButton({ onClick, primary, children }) {
-	console.log(onClick);
+	const { theme } = useContext(ThemeContext);
+
 	return (
-		<Pressable style={[styles.button, primary ? styles.buttonPrimary : styles.buttonSecondary]} onPress={onClick}>
-			<Text style={[primary ? styles.textPrimary : styles.textSecondary]}>{ children }</Text>
+		<Pressable style={[styles.button, theme.border, primary ? theme.primary : theme.bgLight]} onPress={onClick}>
+			<View style={[styles.content, primary ? {color: theme.bg.backgroundColor} : theme.text]}>{ children }</View>
 		</Pressable>
 	);
 }
@@ -12,23 +15,15 @@ function CustomButton({ onClick, primary, children }) {
 const styles = StyleSheet.create({
 	button: {
 		paddingVertical: 8,
-		paddingHorizontal: 24,
-		borderColor: '#404859',
-		borderWidth: 1,
+		paddingHorizontal: 20,
 		borderRadius: 6,
-		alignSelf: 'flex-start'
+		alignSelf: 'flex-start',
+		flexGrow: 1
 	},
-	buttonPrimary: {
-		backgroundColor: '#9CB9F1'
-	},
-	buttonSecondary: {
-		backgroundColor: '#0D1526'
-	},
-	textPrimary: {
-		color: '#060B13'
-	},
-	textSecondary: {
-		color: '#E5EEFF'
+	content: {
+		flexDirection: 'row',
+		gap: 8,
+		alignItems: 'center'
 	}
 });
 

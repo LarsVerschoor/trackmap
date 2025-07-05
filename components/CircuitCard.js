@@ -1,12 +1,16 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CustomButton from './CustomButton';
 import { useNavigation } from '@react-navigation/native';
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
+import { CircuitsContext } from '../contexts/CircuitsContext';
 
 function CircuitCard ({ circuit }) {
+	const { toggleVisited } = useContext(CircuitsContext);
+	const { theme } = useContext(ThemeContext);
 	const navigation = useNavigation();
 	function handleMapClick() {
-		console.log('test')
 		navigation.navigate('Map', {
 			region: {
 				latitude: circuit.location.latitude,
@@ -18,20 +22,28 @@ function CircuitCard ({ circuit }) {
 	}
 
 	return (
-		<View style={ styles.container }>
+		<View style={[theme.bg, theme.border, styles.container]}>
 			<View style={styles.headerContainer}>
-				<Text style={styles.name}>{circuit.name}</Text>
-				<Ionicons name="bookmark-outline" size={24} color="#9CB9F2"/>
+				<Text style={[theme.text, styles.name]}>{circuit.name}</Text>
+				<Pressable onPress={() => toggleVisited(circuit.id)}>
+					<Ionicons name={`checkmark-circle${circuit.visited ? '' : '-outline'}`} size={25} color={theme.primary.backgroundColor}/>
+				</Pressable>
 			</View>
 
 			<View style={styles.locationDescriptionContainer}>
-				<Ionicons name="location" size={24} color="#A4AEC2"/>
-				<Text style={styles.locationDescription}>{circuit.location.description}</Text>
+				<Ionicons name="location-outline" size={25} color={theme.textMuted.color}/>
+				<Text style={theme.textMuted}>{circuit.location.description}</Text>
 			</View>
 
 			<View style={styles.buttonsContainer}>
-				<CustomButton primary={true} onClick={handleMapClick}>Naar Locatie</CustomButton>
-				<CustomButton primary={false}>Mijn notities</CustomButton>
+				<CustomButton primary onClick={handleMapClick}>
+					<Ionicons name="map-outline" size={25} color={theme.bg.backgroundColor}/>
+					<Text style={{color: theme.bg.backgroundColor}}>Naar Locatie</Text>
+				</CustomButton>
+				<CustomButton>
+					<Ionicons name="images-outline" size={25} color={theme.text.color}/>
+					<Text style={theme.text}>Mijn Foto's</Text>
+				</CustomButton>
 			</View>
 		</View>
 	)
@@ -39,9 +51,6 @@ function CircuitCard ({ circuit }) {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: '#060B13',
-		borderColor: '#404859',
-		borderWidth: 1,
 		padding: 10,
 		borderRadius: 10
 	},
@@ -53,8 +62,7 @@ const styles = StyleSheet.create({
 	},
 	name: {
 		fontSize: 16,
-		color: '#E5EEFF'
-
+		fontWeight: 'bold'
 	},
 	locationDescriptionContainer: {
 		flexDirection: 'row',
@@ -62,13 +70,10 @@ const styles = StyleSheet.create({
 		gap: 8,
 		marginBottom: 18
 	},
-	locationDescription: {
-		color: '#A4AEC2'
-	},
 	buttonsContainer: {
 		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 10,
+		flexWrap: 'wrap',
+		gap: 10
 	}
 });
 
