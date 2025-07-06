@@ -56,7 +56,8 @@ function CircuitsProvider({children}) {
 
 	async function addPhoto(circuitId, uri, description) {
 		const extension = uri.split('.').pop();
-		const fileName = `${circuitId}_${Date.now()}.${extension}`;
+		const date = Date.now();
+		const fileName = `${circuitId}_${date}.${extension}`;
 		const destination = documentDirectory + fileName;
 
 		await copyAsync({
@@ -68,15 +69,54 @@ function CircuitsProvider({children}) {
 			if (circuit.id === circuitId) {
 				circuit.photos.push({
 					uri: destination,
-					description
+					description,
+					date: date
 				});
 			}
 			return circuit;
 		}));
 	}
 
+	function editPhoto(photo, newCircuitId, newDescription) {
+		setCircuits((prevCircuits) => {
+			return prevCircuits.map((circuit) => {
+				let updatedPhotos = [...circuit.photos];
+
+				if (photo.circuitId !== newCircuitId && circuit.id === photo.circuitId) {
+					updatedPhotos = updatedPhotos.filter((p) => p.date !== photo.date);
+				}
+
+				if (circuit.id === photo.circuitId) {
+					const index = updatedPhotos.findIndex((p) => p.date === photo.date);
+					if (index !== -1) {
+						updatedPhotos[index] = {
+							...updatedPhotos[index],
+							description: newDescription,
+						};
+
+						if (circuit.id !== newCircuitId) {
+							updatedPhotos.splice(index, 1);
+						}
+					}
+				}
+
+				if (circuit.id === newCircuitId) {
+					const exists = updatedPhotos.some((p) => p.date === photo.date);
+					if (!exists) {
+						updatedPhotos.push({ ...photo, description: newDescription, circuitId: newCircuitId });
+					}
+				}
+
+				return {
+					...circuit,
+					photos: updatedPhotos,
+				};
+			});
+		});
+	}
+
 	return (
-		<CircuitsContext.Provider value={{ circuits, loadCircuits, toggleVisited, addPhoto }}>
+		<CircuitsContext.Provider value={{ circuits, loadCircuits, toggleVisited, addPhoto, editPhoto }}>
 			{children}
 		</CircuitsContext.Provider>
 	);

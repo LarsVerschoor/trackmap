@@ -28,7 +28,7 @@ function AddMediaScreen() {
 	}
 
 	async function savePhoto() {
-		if (!image || !selectedCircuit) {
+		if (!image || selectedCircuit === null) {
 			alert('Selecteer een circuit en een foto voordat u opslaat.');
 			return;
 		}
@@ -44,9 +44,9 @@ function AddMediaScreen() {
 	return (
 		<ScrollView>
 			<View style={[styles.container, theme.bgDark]}>
-				<Text style={[theme.text, styles.heading]}>Welke foto wilt u toevoegen?</Text>
+				<Text style={[theme.text, styles.heading]}>Foto</Text>
 				<View style={[theme.bg, theme.border, styles.section]}>
-					<Text style={theme.textMuted}>Zoek een foto</Text>
+					<Text style={theme.textMuted}>Selecteer een foto</Text>
 					<CustomButton onClick={() => pickMedia()} primary>
 						<Ionicons name="image-outline" size={25} color={theme.bg.backgroundColor}/>
 						<Text style={{color: theme.bg.backgroundColor}}>Foto zoeken op dit apparaat</Text>
@@ -74,7 +74,7 @@ function AddMediaScreen() {
 					/>
 				</View>
 
-				<Text style={[theme.text, styles.heading]}>Bij welk circuit hoort de foto?</Text>
+				<Text style={[theme.text, styles.heading]}>Circuit</Text>
 				<View style={[theme.bg, theme.border, styles.section]}>
 					<Text style={theme.textMuted}>Selecteer een circuit</Text>
 					<View style={[theme.border, styles.dropdown]}>
@@ -85,6 +85,13 @@ function AddMediaScreen() {
 							itemStyle={theme.bgLight}
 							dropdownIconColor={theme.text.color}
 						>
+							<Picker.Item
+								label="Selecteer een circuit"
+								value={null}
+								key={null}
+								color={theme.text.color}
+								style={theme.bgLight}
+							/>
 							{
 								circuits.map((circuit) => (
 									<Picker.Item
@@ -103,7 +110,7 @@ function AddMediaScreen() {
 				<View style={[theme.bg, theme.border, styles.section]}>
 					<CustomButton onClick={() => savePhoto()} primary>
 						<Ionicons name="save-outline" size={25} color={theme.bg.backgroundColor}/>
-						<Text style={{color: theme.bg.backgroundColor}}>Voeg de foto toe aan het circuit</Text>
+						<Text style={{color: theme.bg.backgroundColor}}>Foto opslaan</Text>
 					</CustomButton>
 				</View>
 			</View>
@@ -116,7 +123,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		minHeight: '100%',
 		paddingVertical: 16,
-		gap: 16
+		gap: 8
 	},
 	section: {
 		marginHorizontal: 16,

@@ -12,11 +12,23 @@ function CircuitCard ({ circuit }) {
 	const navigation = useNavigation();
 	function handleMapClick() {
 		navigation.navigate('Map', {
-			region: {
-				latitude: circuit.location.latitude,
-				longitude: circuit.location.longitude,
-				latitudeDelta: 0.05,
-				longitudeDelta: 0.05
+			screen: 'MapScreen',
+			params: {
+				region: {
+					latitude: circuit.location.latitude,
+					longitude: circuit.location.longitude,
+					latitudeDelta: 0.05,
+					longitudeDelta: 0.05
+				}
+			}
+		});
+	}
+
+	function handlePhotoClick() {
+		navigation.navigate('Media', {
+			screen: 'MediaScreen',
+			params: {
+				filter: circuit.id
 			}
 		});
 	}
@@ -38,12 +50,13 @@ function CircuitCard ({ circuit }) {
 			<View style={styles.buttonsContainer}>
 				<CustomButton primary onClick={handleMapClick}>
 					<Ionicons name="map-outline" size={25} color={theme.bg.backgroundColor}/>
-					<Text style={{color: theme.bg.backgroundColor}}>Naar Locatie</Text>
+					<Text style={{ color: theme.bg.backgroundColor }}>Naar Locatie</Text>
 				</CustomButton>
-				<CustomButton>
+				{circuit.photos.length > 0 && <CustomButton onClick={handlePhotoClick}>
 					<Ionicons name="images-outline" size={25} color={theme.text.color}/>
-					<Text style={theme.text}>Mijn Foto's</Text>
-				</CustomButton>
+					<Text style={theme.text}>Foto's ({circuit.photos.length})</Text>
+					</CustomButton>
+				}
 			</View>
 		</View>
 	)

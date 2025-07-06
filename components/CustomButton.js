@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
 	content: {
 		flexDirection: 'row',
 		gap: 8,
-		alignItems: 'center'
+		alignItems: 'center',
+		justifyContent: 'center'
 	}
 });
 
