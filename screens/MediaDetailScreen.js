@@ -25,6 +25,8 @@ function MediaDetailScreen({ route }) {
 		});
 	}
 
+	const circuit = circuits.find((circuit) => circuit.id === photo.circuitId);
+
 	async function sharePhoto() {
 		try {
 			const isAvailable = await Sharing.isAvailableAsync();
@@ -44,7 +46,12 @@ function MediaDetailScreen({ route }) {
 	async function shareDescription() {
 		try {
 			await Share.share({
-				message: photo.description,
+				message: `
+				Circuit: ${circuit.name}
+				Locatie: ${circuit.location.description}
+				Mijn beschrijving bij dit circuit: ${photo.description}
+				Datum beschrijving: ${new Date(photo.date).toString()}
+				`
 			});
 		} catch (error) {
 			console.error(error);
