@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { copyAsync, documentDirectory } from 'expo-file-system';
+import { copyAsync, documentDirectory, deleteAsync } from 'expo-file-system';
 
 const CircuitsContext = createContext(null);
 
@@ -115,8 +115,20 @@ function CircuitsProvider({children}) {
 		});
 	}
 
+	async function deletePhoto(circuitId, photoUri) {
+		await deleteAsync(photoUri, { idempotent: true });
+
+		setCircuits((prev) => prev.map((circuit) => {
+			if (circuit.id !== circuitId) return circuit;
+			return {
+				...circuit,
+				photos: circuit.photos.filter((photo) => photo.uri !== photoUri)
+			}
+		}));
+	}
+
 	return (
-		<CircuitsContext.Provider value={{ circuits, loadCircuits, toggleVisited, addPhoto, editPhoto }}>
+		<CircuitsContext.Provider value={{ circuits, loadCircuits, toggleVisited, addPhoto, editPhoto, deletePhoto }}>
 			{children}
 		</CircuitsContext.Provider>
 	);
